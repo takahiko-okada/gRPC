@@ -1,0 +1,21 @@
+
+// need semi-colon
+syntax = "proto3";
+package calculate;
+// pb stands for "protobuf"
+option go_package="calculatorpb";
+
+message SumRequest {
+  int32 first_number = 1;
+  int32 second_number = 2;
+}
+
+message SumResponse {
+  int32 sum_result = 1;
+}
+
+service CalculatorService {
+  //Unary
+  // this Sum will be the function name
+  rpc Sum(SumRequest) returns (SumResponse) {};
+}
