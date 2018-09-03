@@ -41,4 +41,14 @@ Errors
 => add $GOPATH/bin to PATH then install things again
 
 
+Procedures
+
+1.create Folders each for the server and the client (ex. calculate_client).
+2.create .go file in each folder (ex. server.go)
+3.create proto file in calculatepb folder. (ex. calculate.proto). Need syntax, package name, option.
+4.write generate command in .sh file
+5. run the sh command
+
+
+
 
