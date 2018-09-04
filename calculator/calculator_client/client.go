@@ -20,6 +20,7 @@ func main() {
 	c := calculatorpb.NewCalculatorServiceClient(cc)
 	// fmt.Printf("Created client: %f", c)
 	doUnary(c)
+
 }
 
 func doUnary(c calculatorpb.CalculatorServiceClient) {
