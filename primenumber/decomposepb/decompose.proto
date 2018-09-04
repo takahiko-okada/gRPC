@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package primenumber;
+option go_package="decomposepb";
+
+message Decompose {
+  int32 number = 1;
+}
+
+message DecomposeRequest {
+  Decompose request = 1;
+}
+
+message DecomposeResponse {
+  int32 result = 1;
+}
+
+message DecomposeManyTimesRequest {
+  Decompose request = 1;
+}
+
+message DecomposeManyTimesResponse {
+  int32 result = 1;
+}
+// New rpc => new request & new response
+
+
+service DecomposeService{
+  // Unary
+  rpc Decompose(DecomposeRequest) returns (DecomposeResponse) {};
+
+  rpc DecomposeManyTimes(DecomposeManyTimesRequest) returns (stream DecomposeManyTimesResponse) {};
+
+}
