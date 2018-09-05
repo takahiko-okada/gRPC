@@ -14,8 +14,17 @@ message SumResponse {
   int32 sum_result = 1;
 }
 
+message PrimeNumberDecompositionRequest{
+  int64 number = 1;
+}
+
+message PrimeNumberDecompositionResponse{
+  int64 prime_factor = 1;
+}
+
 service CalculatorService {
   //Unary
   // this Sum will be the function name
   rpc Sum(SumRequest) returns (SumResponse) {};
+  rpc PrimeNumberDecomposition(PrimeNumberDecompositionRequest) returns (stream PrimeNumberDecompositionResponse) {};
 }
