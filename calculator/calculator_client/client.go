@@ -20,9 +20,10 @@ func main() {
 
 	c := calculatorpb.NewCalculatorServiceClient(cc)
 	// fmt.Printf("Created client: %f", c)
-	doUnary(c)
+	// doUnary(c)
 
-	doServerStreaming(c)
+	// doServerStreaming(c)
+	doClientStreaming(c)
 }
 
 func doUnary(c calculatorpb.CalculatorServiceClient) {
@@ -59,4 +60,28 @@ func doServerStreaming(c calculatorpb.CalculatorServiceClient) {
 		}
 		fmt.Println(res.GetPrimeFactor())
 	}
+}
+
+// CalculatorServiceClient is and interface which consists of
+// available methods
+func doClientStreaming(c calculatorpb.CalculatorServiceClient) {
+	fmt.Println("Starting to do a Client Streaming RPC...")
+	// Define multiple requests
+	requests := []int32{3, 5, 9, 54, 23}
+
+	stream, err := c.ComputeAverage(context.Background())
+	if err != nil {
+		log.Fatalf("error while opening stream: %v", err)
+	}
+
+	for _, req := range requests {
+		stream.Send(&calculatorpb.ComputeAverageRequest{
+			Number: req,
+		})
+	}
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Fatalf("error while receiving response from ComputeAverage: %v", err)
+	}
+	fmt.Printf("ComputeAverageResponse: %v\n", res)
 }
