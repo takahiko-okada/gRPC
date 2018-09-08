@@ -23,8 +23,6 @@ message GreetManyTimesRequest {
 message GreetManyTimesResponse {
   string result = 1;
 }
-// New rpc => new request & new response
-
 
 message LongGreetRequest {
   Greeting greeting = 1;
@@ -34,12 +32,22 @@ message LongGreetResponse {
   string result = 1;
 }
 
+message GreetEveryoneRequest {
+  Greeting greeting = 1;
+}
+
+message GreetEveryoneResponse {
+  string result = 1;
+}
+
+// New rpc => new request & new response
 service GreetService{
   // Unary
   rpc Greet(GreetRequest) returns (GreetResponse) {};
-
+  // Server streaming
   rpc GreetManyTimes(GreetManyTimesRequest) returns (stream GreetManyTimesResponse) {};
-
-  //
+  // Client streaming
   rpc LongGreet(stream LongGreetRequest) returns (LongGreetResponse) {};
+  // BiDi
+  rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse) {};
 }
