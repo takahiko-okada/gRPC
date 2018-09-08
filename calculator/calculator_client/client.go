@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"time"
 
 	"github.com/tkhkokd/grpc/calculator/calculatorpb"
 	"google.golang.org/grpc"
@@ -23,7 +24,8 @@ func main() {
 	// doUnary(c)
 
 	// doServerStreaming(c)
-	doClientStreaming(c)
+	// doClientStreaming(c)
+	doBiDiStreaming(c)
 }
 
 func doUnary(c calculatorpb.CalculatorServiceClient) {
@@ -84,4 +86,45 @@ func doClientStreaming(c calculatorpb.CalculatorServiceClient) {
 		log.Fatalf("error while receiving response from ComputeAverage: %v", err)
 	}
 	fmt.Printf("ComputeAverageResponse: %v\n", res)
+}
+
+func doBiDiStreaming(c calculatorpb.CalculatorServiceClient) {
+	fmt.Println("Starting to do a BiDi Streaming RPC...")
+	stream, err := c.FindMaximum(context.Background())
+	if err != nil {
+		log.Fatalf("Error while creating stream: %v", err)
+		return
+	}
+
+	waitc := make(chan struct{})
+
+	go func() {
+		requests := []int32{3, 5, 9, 54, 21, 23, 100}
+		for _, req := range requests {
+			fmt.Printf("Sending message: %v\n", req)
+			stream.Send(&calculatorpb.FindMaximumRequest{
+				Number: req,
+			})
+			time.Sleep(1000 * time.Millisecond)
+		}
+		stream.CloseSend()
+	}()
+
+	go func() {
+		for {
+			res, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Fatalf("Error while receiving: %v\n", err)
+				break
+			}
+			maximum := res.GetResult()
+			fmt.Printf("Received a new maximum of...: %v\n", maximum)
+		}
+		close(waitc)
+	}()
+
+	<-waitc
 }
